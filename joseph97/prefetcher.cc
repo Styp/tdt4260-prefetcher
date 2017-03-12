@@ -23,7 +23,7 @@
 #include <cstdarg>
 
 #define MAX_NODE   65536
-#define MAX_FANOUT 2
+#define MAX_FANOUT 8
 
 /* ---------------------------------------------------------------- Logging */
 #define LOGD(...) PrintLog(__PRETTY_FUNCTION__, __VA_ARGS__)
@@ -138,7 +138,6 @@ void prefetch_init(void)
 
 void prefetch_access(AccessStat stat)
 {
-    return;
     Addr addr = stat.mem_addr;
     addr &= ~(Addr)(BLOCK_SIZE - 1);
 
