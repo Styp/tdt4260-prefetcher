@@ -22,8 +22,8 @@
 #include <cstdio>
 #include <cstdarg>
 
-#define MAX_NODE   32768
-#define MAX_FANOUT 4
+#define MAX_NODE   65536
+#define MAX_FANOUT 2
 
 /* ---------------------------------------------------------------- Logging */
 #define LOGD(...) PrintLog(__PRETTY_FUNCTION__, __VA_ARGS__)
@@ -119,9 +119,10 @@ void model_prefetch(Addr addr)
 
     LOGD("model_prefetch: addr = 0x%016x, node_count = %d, predict_count = %d",
          addr, nodes.size(), node.next_misses.size());
-    if (node.next_misses.size() > 0)
+    for (std::deque<Addr>::reverse_iterator it = node.next_misses.rbegin();
+         it != node.next_misses.rend(); ++it)
     {
-        Addr pf_addr = node.next_misses.back();
+        Addr pf_addr = *it;
         if (!in_cache(pf_addr) && !in_mshr_queue(pf_addr))
         {
             LOGD("issue_prefetch: addr = 0x%016x", addr);
@@ -137,6 +138,7 @@ void prefetch_init(void)
 
 void prefetch_access(AccessStat stat)
 {
+    return;
     Addr addr = stat.mem_addr;
     addr &= ~(Addr)(BLOCK_SIZE - 1);
 
